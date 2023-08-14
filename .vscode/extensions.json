@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit",
+    "editorconfig.editorconfig"
+  ],
+  "unwantedRecommendations": [
+    "ms-dotnettools.vscodeintellicode-csharp"
+  ]
+}
