@@ -1,0 +1,15 @@
+{
+  "clientSettings": {
+    "botToken": "REPLACE ME",
+    "botUsername": "REPLACE ME",
+    "twitchChannel": [
+      "REPLACE ME"
+    ]
+  },
+  "botCommandMapping": [
+    {
+      "input": "gacha",
+      "target": "getRandoString"
+    }
+  ]
+}
