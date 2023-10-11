@@ -46,16 +46,16 @@ namespace Gachabot {
 
     #region client events
     private void OnClientLog(object? sender, OnLogArgs e) {
-      Console.WriteLine($"{e.DateTime}: {e.BotUsername} - {e.Data}");
+      Log.Info($"{e.DateTime}: {e.BotUsername} - {e.Data}");
     }
 
     private void OnClientConnected(object? sender, OnConnectedArgs e) {
-      Console.WriteLine("CLIENT CONNECTED");
+      Log.Info("CLIENT CONNECTED");
       JoinChannels();
     }
 
     private void OnClientJoined(object? sender, OnJoinedChannelArgs e) {
-      Console.WriteLine($"JOINED - {e.Channel}");
+      Log.Info($"JOINED - {e.Channel}");
     }
 
     private void OnClientMessageReceived(object? sender, OnMessageReceivedArgs e) {

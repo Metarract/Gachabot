@@ -4,7 +4,11 @@ using Gachabot.Models;
 namespace Gachabot;
 public class App {
   public App() {
-    Console.WriteLine("Initializing");
+    Log.Info("Initializing");
+    InitBot();
+  }
+
+  private static void InitBot() {
     var config = GetConfig();
     Bot bot = new(config);
   }
@@ -30,7 +34,7 @@ public class App {
       case "close":
       case "end":
       case "leave":
-        Console.WriteLine("Exiting...");
+        Log.Info("Exiting...");
         Environment.Exit(0);
         break;
       default:
