@@ -4,6 +4,7 @@ namespace Gachabot {
       public ClientSettings ClientSettings;
       public List<CommandMap> BotCommandMapping;
       public string Template;
+      public string ListDirectory;
     }
 
     public struct CommandMap {
@@ -14,7 +15,6 @@ namespace Gachabot {
     public struct ClientSettings {
       public string ClientId;
       public string ClientSecret;
-      public string BotToken;
       public string BotUsername;
 
       public string RedirectUri;

@@ -1,0 +1,14 @@
+{
+  "ClientSettings": {
+    "ClientId": "REPLACE ME",
+    "ClientSecret": "REPLACE ME",
+    "BotUsername": "REPLACE ME",
+    "RedirectUri": "http://localhost:5001/token",
+    "CommandCharacter": "!",
+    "TwitchChannels": [
+      "REPLACE ME"
+    ]
+  },
+  "ListDirectory": "./Data",
+  "Template": "{CLASSES} {RACES}"
+}

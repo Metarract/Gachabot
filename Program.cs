@@ -5,6 +5,7 @@ namespace Gachabot;
 internal class Program {
   public static void Main (string[] args) {
     try {
+      Log.Info("Beginning Setup Procedures");
       var builder = WebApplication.CreateBuilder(args);
       var appConfig = GetConfig();
 
@@ -22,19 +23,20 @@ internal class Program {
 
       if (auth is null || bot is null) throw new Exception("Bot/Twitch Auth not injected properly");
       auth.TwitchTokenSet += bot.SetClientCredentials;
+      bot.CheckCredValidity += auth.AttemptTokenRefresh;
 
       app.MapGet("/authorize", (TwitchAuth twitchAuth) => Results.Redirect(twitchAuth.GetAuthorizationUrl()));
       app.MapGet("/token", async (string? code, string? scope, string? state, string? error, Bot bot, TwitchAuth twitchAuth) => {
         if (error != null) return Results.Unauthorized();
         if (state != twitchAuth.StateString) return Results.BadRequest();
         if (code == null) return Results.StatusCode(500);
-        Log.Info("Authorized");
+        Log.Info("User authorized token for Bot Client");
         await twitchAuth.GetToken(code);
         Log.Info("User Auth Token Generated");
         return Results.Content("Success: You may now close this window");
       });
 
-      app.Run("http://localhost:3001");
+      app.Run("http://localhost:3000");
     } catch (Exception ex) {
       Log.Fatal(ex.Message);
       throw;

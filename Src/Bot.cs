@@ -10,21 +10,23 @@ namespace Gachabot;
 public sealed class Bot {
   private readonly TwitchClient Client;
   private readonly Config ClientConfig;
-  private bool BotInitialized = false;
+  private bool ClientConfigured = false;
 
   private ConnectionCredentials? ClientCreds;
+  public delegate void CheckCredValidityHandler ();
+  public event CheckCredValidityHandler? CheckCredValidity;
 
   public Bot (Config appConfig) {
     ClientConfig = appConfig;
     Client = GetClient();
-    Log.Info("Bot started");
-    Log.Info("Awaiting token initialization (visit /authorize to get a new token for the bot, or wait for local cache)");
+    Log.Info("Bot Client initialized");
+    Log.Info("Awaiting token initialization");
   }
 
-  #region bot setup
+  #region bot setup / configuration
   private static TwitchClient GetClient () {
     ClientOptions clientOptions = new() {
-      MessagesAllowedInPeriod = 750,
+      MessagesAllowedInPeriod = 20,
       ThrottlingPeriod = TimeSpan.FromSeconds(30)
     };
 
@@ -34,13 +36,25 @@ public sealed class Bot {
     return newClient;
   }
 
-  public void SetClientCredentials (string tempToken) {
-    ClientCreds = new(ClientConfig.ClientSettings.BotUsername, tempToken);
-    if (BotInitialized) return;
-    InitBotClient();
+  public void SetClientCredentials (string newToken) {
+    ClientCreds = new(ClientConfig.ClientSettings.BotUsername, newToken);
+    if (!ClientConfigured) ConfigureBotClient();
+    if (!Client.IsConnected) {
+      try {
+        Log.Info("Setting creds and attempting to connect Bot Client...");
+        Client.SetConnectionCredentials(ClientCreds);
+        Client.Connect();
+      } catch (Exception ex) {
+        Log.Error("Ran into issues while attempting to reconnect, you may need to restart");
+        Log.Error(ex.Message);
+      }
+    } else {
+      Log.Info("Received new credential authorization, disconnecting temporarily to reup credentials...");
+      Client.Disconnect();
+    }
   }
 
-  private void InitBotClient () {
+  private void ConfigureBotClient () {
     Client.AddChatCommandIdentifier(ClientConfig.ClientSettings.CommandCharacter);
     Client.OnLog += OnClientLog;
     Client.OnConnected += OnClientConnected;
@@ -49,49 +63,42 @@ public sealed class Bot {
     Client.OnJoinedChannel += OnClientJoined;
     Client.OnChatCommandReceived += OnClientCommandReceived;
 
-    ConnectionCredentials credentials = new(ClientConfig.ClientSettings.BotUsername, ClientConfig.ClientSettings.BotToken);
-    Client.Initialize(credentials);
-    Client.Connect();
+    Client.Initialize(ClientCreds);
 
-    BotInitialized = true;
-    Log.Info("Bot initialized");
+    ClientConfigured = true;
+    Log.Info("Bot configuration completed");
   }
 
   private void JoinChannels () => ClientConfig.ClientSettings.TwitchChannels.ForEach(channel => Client.JoinChannel(channel));
   #endregion
 
-  #region client events
+  #region bot client event handlers
   private void OnClientLog (object? sender, OnLogArgs e) {
-    Log.Info($"[BOT] [{e.BotUsername}] - {e.Data}");
+    Log.Info($"[IRC][{e.BotUsername}] - {e.Data}");
   }
 
   private void OnClientConnected (object? sender, OnConnectedArgs e) {
-    Log.Info("[BOT] CLIENT CONNECTED");
+    Log.Info("Bot Client Connected");
     JoinChannels();
   }
 
   private void OnClientDisconnected (object? sender, OnDisconnectedEventArgs e) {
-    Log.Info("Client Disconnected");
-    try {
-      Log.Info("Setting new creds and attempting to reconnect...");
-      Client.SetConnectionCredentials(ClientCreds);
-      Client.Connect();
-    } catch (Exception error) {
-      Log.Error(error.Message);
-    }
+    Log.Info("Bot Client Disconnected");
+    CheckCredValidity?.Invoke();
   }
 
   private void OnClientConnectionError (object? sender, OnConnectionErrorArgs e) {
-    Log.Info("Ran into some issues, disconnecting to reup credentials...");
-    Client.Disconnect();
+    Log.Info("Ran into connection issues, checking credential validity...");
+    CheckCredValidity?.Invoke();
   }
 
   private void OnClientJoined (object? sender, OnJoinedChannelArgs e) {
-    Log.Info($"[BOT] JOINED - {e.Channel}");
+    Log.Info($"Bot joined channel: {e.Channel}");
   }
 
-  private void OnClientCommandReceived (object? sender, OnChatCommandReceivedArgs e) {
-    Log.Debug($"[COMMAND] {e.Command.CommandText}");
+  private async void OnClientCommandReceived (object? sender, OnChatCommandReceivedArgs e) {
+    var response = await MessageHandler.GetCommandResponse(e.Command, ClientConfig);
+    if (response != null) Client.SendMessage(e.Command.ChatMessage.Channel, response);
   }
   #endregion
 }
