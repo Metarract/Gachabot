@@ -1,10 +1,9 @@
-using System.Collections.Generic;
-
 namespace Gachabot {
   namespace Models {
     public struct Config {
-      public ClientSettings clientSettings;
-      public List<CommandMap> botCommandMapping;
+      public ClientSettings ClientSettings;
+      public List<CommandMap> BotCommandMapping;
+      public string Template;
     }
 
     public struct CommandMap {
@@ -13,9 +12,15 @@ namespace Gachabot {
     }
 
     public struct ClientSettings {
-      public string botToken;
-      public string botUsername;
-      public List<string> twitchChannels;
+      public string ClientId;
+      public string ClientSecret;
+      public string BotToken;
+      public string BotUsername;
+
+      public string RedirectUri;
+
+      public char CommandCharacter;
+      public List<string> TwitchChannels;
     }
   }
 }

@@ -1,19 +1,26 @@
-using Newtonsoft.Json;
 using Gachabot.Models;
+using Newtonsoft.Json;
 
 namespace Gachabot;
 public class App {
-  public App() {
+  private Config AppConfig;
+  private readonly Bot GachaBot;
+  private readonly TwitchAuth _TwitchAuth;
+
+  public App () {
     Log.Info("Initializing");
-    InitBot();
+    AppConfig = GetConfig();
+    GachaBot = new(AppConfig);
+    _TwitchAuth = new(
+      AppConfig.ClientSettings.ClientId,
+      AppConfig.ClientSettings.ClientSecret,
+      AppConfig.ClientSettings.RedirectUri
+    );
+
+    _TwitchAuth.TwitchTokenSet += GachaBot.SetClientCredentials;
   }
 
-  private static void InitBot() {
-    var config = GetConfig();
-    Bot bot = new(config);
-  }
-
-  public void Run() {
+  public void Run () {
     while (true) {
       string? inputMessage = Console.ReadLine();
       if (inputMessage == null) continue;
@@ -21,15 +28,19 @@ public class App {
     }
   }
 
-  private static Config GetConfig() {
+  private static Config GetConfig () {
     string configString = File.ReadAllText("./config.dev.json");
     return JsonConvert.DeserializeObject<Config>(configString);
   }
 
-  private void AdminInputHandler(string message) {
-    var sanitizedMessage = message.Trim().ToLower();
-    if (sanitizedMessage.StartsWith("!")) sanitizedMessage = sanitizedMessage.Remove(0, 1);
-    switch (sanitizedMessage) {
+  private void AdminInputHandler (string message) {
+    string sanitizedMessage = MessageHandler.SanitizeMessage(message);
+    var (command, commMessage) = MessageHandler.SplitMessage(sanitizedMessage);
+    // if (!builtin V && !command) return;
+    // TODO change these to enums V
+    switch (command) {
+      case "restart": // TODO make bot singleton and setup restart
+        break;
       case "exit":
       case "close":
       case "end":

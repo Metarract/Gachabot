@@ -481,3 +481,4 @@ $RECYCLE.BIN/
 ####################
 **/*.csv
 config.*.json
+**/cachefile

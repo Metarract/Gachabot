@@ -1,5 +1,6 @@
 {
   "clientSettings": {
+    // TODO COPY OVER ALL THE SETTINGS FROM THE DEV CONFIG AND FUCKIN USE EM
     "botToken": "REPLACE ME",
     "botUsername": "REPLACE ME",
     "twitchChannels": [
