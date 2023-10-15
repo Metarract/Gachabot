@@ -11,9 +11,9 @@ internal class Program {
 
       builder.Services.AddSingleton(new Bot(appConfig));
       builder.Services.AddSingleton(new TwitchAuth(
-        appConfig.ClientSettings.ClientId,
-        appConfig.ClientSettings.ClientSecret,
-        appConfig.ClientSettings.RedirectUri
+        appConfig.ClientConfig.ClientId,
+        appConfig.ClientConfig.ClientSecret,
+        appConfig.ClientConfig.RedirectBaseUri
       ));
 
       var app = builder.Build();
@@ -36,7 +36,7 @@ internal class Program {
         return Results.Content("Success: You may now close this window");
       });
 
-      app.Run("http://localhost:3000");
+      app.Run($"http://localhost:{appConfig.ClientConfig.LocalAppPort}");
     } catch (Exception ex) {
       Log.Fatal(ex.Message);
       throw;

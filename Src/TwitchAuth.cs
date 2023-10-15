@@ -17,10 +17,10 @@ public class TwitchAuth {
   public event TwitchTokenSetHandler? TwitchTokenSet;
 
   private readonly static TwitchAPI api = new();
-  public string BaseUri;
+  public string RedirectBaseUri;
 
   public TwitchAuth (string clientId, string clientSecret, string redirectBaseUri) {
-    BaseUri = redirectBaseUri;
+    RedirectBaseUri = redirectBaseUri;
     api.Settings.ClientId = clientId;
     api.Settings.Secret = clientSecret;
 
@@ -36,7 +36,7 @@ public class TwitchAuth {
   public string GetAuthorizationUrl () {
     ResetStateString();
     return api.Auth.GetAuthorizationCodeUrl(
-      BaseUri,
+      RedirectBaseUri,
       api.Settings.Scopes,
       true,
       StateString,
@@ -66,7 +66,7 @@ public class TwitchAuth {
     Log.Info("Checking Token Cache...");
     if (!File.Exists(RTOKEN_PATH)) {
       Log.Warn("Token Cache not found");
-      Log.Info($"Please visit {BaseUri}/authorize to get a new token for the bot");
+      Log.Info($"Please visit {RedirectBaseUri}/authorize to get a new token for the bot");
       return;
     }
     var content = await File.ReadAllTextAsync(RTOKEN_PATH);
@@ -81,7 +81,7 @@ public class TwitchAuth {
     await RefreshToken();
   }
 
-  public async Task GetToken (string authCode) => SetAuthFromResponse(await api.Auth.GetAccessTokenFromCodeAsync(authCode, api.Settings.Secret, $"{BaseUri}/token", api.Settings.ClientId));
+  public async Task GetToken (string authCode) => SetAuthFromResponse(await api.Auth.GetAccessTokenFromCodeAsync(authCode, api.Settings.Secret, $"{RedirectBaseUri}/token", api.Settings.ClientId));
   private async Task RefreshToken () => SetAuthFromResponse(await api.Auth.RefreshAuthTokenAsync(Refresh, api.Settings.Secret, api.Settings.ClientId));
 
   private void SetAuthFromResponse (AuthCodeResponse res) => SetAuthVals(res.AccessToken, res.RefreshToken, res.ExpiresIn);
@@ -94,7 +94,7 @@ public class TwitchAuth {
     TwitchTokenSet?.Invoke(Token);
   }
 
-  #region State String
+  #region state string junk
   // this is used to ensure the token response we received is tied to the oauth request we made, so we don't send our client secret to a malicious third party
   private string GenerateRandomString (int length) {
     //alphanumeric string to pull a random character from

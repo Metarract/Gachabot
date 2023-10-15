@@ -1,20 +1,23 @@
 {
-  "ClientSettings": {
+  "ClientConfig": {
     "ClientId": "REPLACE ME",
     "ClientSecret": "REPLACE ME",
     "BotUsername": "REPLACE ME",
-    "BaseUri": "http://localhost:5001",
+    "LocalAppPort": 3000,
+    "RedirectBaseUri": "http://localhost",
     "TwitchChannels": [
       "REPLACE ME"
-    ],
-    "CommandCharacter": "!"
+    ]
   },
-  "BotCommandMapping": [
-    {
-      "Input": "tome",
-      "Target": "rando"
-    }
-  ],
-  "ListDirectory": "./Data",
-  "Template": "{CLASSES} {RACES}"
+  "CommandConfig": {
+    "CommandCharacter": "!",
+    "BotCommandMapping": [
+      {
+        "Input": "tome",
+        "Target": "rando"
+      }
+    ],
+    "ListDirectory": "./Data",
+    "Template": "{CLASSES} {RACES}"
+  }
 }

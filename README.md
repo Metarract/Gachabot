@@ -4,7 +4,7 @@
 
 A relatively barebones Twitch Bot featuring a random string generator that pulls from local lists and plugs the value into a customizable string template. The bot features an extremely simple local api to easily handle token setup and rotation without too much involvement from the user outside of a few preliminary configuration steps.
 
-This was commissioned mainly for the random string generation, but I wanted to make something open source and relatively generic that I could share / pull from in the future.
+This was commissioned mainly for the random string generation (with the game ToME specifically in mind), but I wanted to make something open source and relatively generic that I could share / pull from in the future.
 
 ## Getting Started
 
@@ -53,8 +53,6 @@ Logging is configured through `NLog`, via the [NLog.config](./NLog.config) file.
 
 ### Starting the bot
 
-// TODO ports?
-
 Once you have all your configuration bits set, simply run the bot. It should create a console window (unless you ran it from a console). In order to kickstart the bot's connection to twitch, you'll need to visit `WhateverYourBaseUriIsHere/authorize` in your browser (e.g., `http://localhost:3000/authorize` if your `BaseUri` is `http://localhost:3000`). This will take you to twitch where it will ask you if you would like to authorize the Application you made in the first step to operate as your account with the permissions specified on the page. 
 
 VERY IMPORTANTLY, MAKE SURE THAT YOU ARE LOGGING IN AS THE PROFILE YOU WANT TO RUN THE BOT AS. This WILL dictate what it runs under. If it helps, you can make an Incognito Window and log in there first. Now would be the time to decide on whether to make a separate account for the bot or just to use your own account. Keep in mind that rate limits are _slightly_ more forgiving for mods/broadcasters of a channel versus regular users, so it's a good idea to have the bot be one of those.
@@ -65,7 +63,7 @@ And there you go, the bot should be running and the application should be able t
 
 ## Contributing
 
-If there's something wrong with the code here, feel free to make an issue. If you make changes and it something goes wrong, keep it to yourself; I get enough of that sort of thing elsewhere. As it stands, I don't care too much about security as this was intended to be used locally. If you care a lot about it, go ahead and fork it and make a PR and I'll review it.
+If there's something wrong with the code here, feel free to make an issue. If you pull it down, make some changes and break it, keep it to yourself. As it stands, I don't care too much about security as this was intended to be used locally. If you care a lot about it, go ahead and fork it and make a PR and I'll review it.
 
 ### VS Code
 

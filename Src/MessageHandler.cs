@@ -30,11 +30,11 @@ public static class MessageHandler {
     return command.ToLower().Trim();
   }
 
-  public async static Task<string?> GetCommandResponse (ChatCommand command, Config config) {
+  public async static Task<string?> GetCommandResponse (ChatCommand command, CommandConfig commandConfig) {
     FixFor7tv(command.ArgumentsAsList);
-    var mappedCommand = GetCommandMapping(command.CommandText, config.BotCommandMapping);
+    var mappedCommand = GetCommandMapping(command.CommandText, commandConfig.BotCommandMapping);
     return mappedCommand switch {
-      Commands.Rando => await Randomizer.GetRandomizedResponse(config),
+      Commands.Rando => await Randomizer.GetRandomizedResponse(commandConfig),
       _ => null,
     };
   }

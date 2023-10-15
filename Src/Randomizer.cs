@@ -25,7 +25,7 @@ public static class Randomizer {
     return list[index];
   }
 
-  public static async Task<string> GetRandomizedResponse (Config config) {
+  public static async Task<string?> GetRandomizedResponse (CommandConfig config) {
     try {
       var templateStringCopy = config.Template;
       var filenames = GetFilenamesFromTemplate(config.Template);
@@ -42,7 +42,7 @@ public static class Randomizer {
       return templateStringCopy;
     } catch (Exception ex) {
       Log.Error(ex.Message);
-      throw;
+      return null;
     }
   }
 }

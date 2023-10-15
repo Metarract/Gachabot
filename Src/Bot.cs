@@ -9,7 +9,7 @@ using TwitchLib.Communication.Models;
 namespace Randobot;
 public sealed class Bot {
   private readonly TwitchClient Client;
-  private readonly Config ClientConfig;
+  private readonly Config config;
   private bool ClientConfigured = false;
 
   private ConnectionCredentials? ClientCreds;
@@ -17,7 +17,7 @@ public sealed class Bot {
   public event CheckCredValidityHandler? CheckCredValidity;
 
   public Bot (Config appConfig) {
-    ClientConfig = appConfig;
+    config = appConfig;
     Client = GetClient();
     Log.Info("Bot Client initialized");
     Log.Info("Awaiting token initialization");
@@ -37,7 +37,7 @@ public sealed class Bot {
   }
 
   public void SetClientCredentials (string newToken) {
-    ClientCreds = new(ClientConfig.ClientSettings.BotUsername, newToken);
+    ClientCreds = new(config.ClientConfig.BotUsername, newToken);
     if (!ClientConfigured) ConfigureBotClient();
     if (!Client.IsConnected) {
       try {
@@ -55,7 +55,7 @@ public sealed class Bot {
   }
 
   private void ConfigureBotClient () {
-    Client.AddChatCommandIdentifier(ClientConfig.ClientSettings.CommandCharacter);
+    Client.AddChatCommandIdentifier(config.CommandConfig.CommandCharacter);
     Client.OnLog += OnClientLog;
     Client.OnConnected += OnClientConnected;
     Client.OnDisconnected += OnClientDisconnected;
@@ -69,7 +69,7 @@ public sealed class Bot {
     Log.Info("Bot configuration completed");
   }
 
-  private void JoinChannels () => ClientConfig.ClientSettings.TwitchChannels.ForEach(channel => Client.JoinChannel(channel));
+  private void JoinChannels () => config.ClientConfig.TwitchChannels.ForEach(channel => Client.JoinChannel(channel));
   #endregion
 
   #region bot client event handlers
@@ -97,7 +97,7 @@ public sealed class Bot {
   }
 
   private async void OnClientCommandReceived (object? sender, OnChatCommandReceivedArgs e) {
-    var response = await MessageHandler.GetCommandResponse(e.Command, ClientConfig);
+    var response = await MessageHandler.GetCommandResponse(e.Command, config.CommandConfig);
     if (response != null) Client.SendMessage(e.Command.ChatMessage.Channel, response);
   }
   #endregion
