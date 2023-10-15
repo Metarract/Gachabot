@@ -2,7 +2,7 @@ using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
 
-namespace Gachabot;
+namespace Randobot;
 public class TwitchAuth {
   private readonly Random random = new();
   public string StateString;

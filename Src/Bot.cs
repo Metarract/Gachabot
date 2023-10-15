@@ -1,4 +1,4 @@
-using Gachabot.Models;
+using Randobot.Models;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
@@ -6,7 +6,7 @@ using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 
-namespace Gachabot;
+namespace Randobot;
 public sealed class Bot {
   private readonly TwitchClient Client;
   private readonly Config ClientConfig;

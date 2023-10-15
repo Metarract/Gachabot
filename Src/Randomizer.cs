@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using Gachabot.Models;
+using Randobot.Models;
 
-namespace Gachabot;
-public static class Gacha {
+namespace Randobot;
+public static class Randomizer {
   private static readonly string templateSubstitutionRegex = @"\{\w+\}";
 
   public static async Task<List<string>> GetItemsFromFile (string filePath) => new(await File.ReadAllLinesAsync(filePath));
@@ -25,7 +25,7 @@ public static class Gacha {
     return list[index];
   }
 
-  public static async Task<string> GetGachaResponse (Config config) {
+  public static async Task<string> GetRandomizedResponse (Config config) {
     try {
       var templateStringCopy = config.Template;
       var filenames = GetFilenamesFromTemplate(config.Template);

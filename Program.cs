@@ -1,7 +1,7 @@
-﻿using Gachabot.Models;
+﻿using Randobot.Models;
 using Newtonsoft.Json;
 
-namespace Gachabot;
+namespace Randobot;
 internal class Program {
   public static void Main (string[] args) {
     try {

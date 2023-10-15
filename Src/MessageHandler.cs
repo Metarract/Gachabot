@@ -1,16 +1,16 @@
-using Gachabot.Models;
+using Randobot.Models;
 using TwitchLib.Client.Models;
 
-namespace Gachabot;
+namespace Randobot;
 public static class Commands {
-  public const string Gacha = "tome";
+  public const string Rando = "rando";
 }
 
 public static class MessageHandler {
   private static void FixFor7tv (List<string> argList) {
     /* 
       !! DB40 DC00 removing these two characters because of 7tv
-      7tv attaches some nonsense character(s, depending on encoding) to the end of every other message you send to "get past spam filters"
+      The 7tv extension attaches some nonsense character(s, depending on encoding) to the end of every other message you send to "get past spam filters"
       these aren't normal whitespace character(s) and as such they don't get trimmed, so we need to remove any elements
       in the list that contain them
 
@@ -24,10 +24,17 @@ public static class MessageHandler {
     }
   }
 
+  private static string GetCommandMapping (string command, List<CommandMap> mappings) {
+    var match = mappings.Find(mapping => mapping.Input.ToLower().Trim() == command.ToLower().Trim());
+    if (match.Target.Trim().Length != 0) return match.Target.ToLower().Trim();
+    return command.ToLower().Trim();
+  }
+
   public async static Task<string?> GetCommandResponse (ChatCommand command, Config config) {
     FixFor7tv(command.ArgumentsAsList);
-    return command.CommandText.ToLower() switch {
-      Commands.Gacha => await Gacha.GetGachaResponse(config),
+    var mappedCommand = GetCommandMapping(command.CommandText, config.BotCommandMapping);
+    return mappedCommand switch {
+      Commands.Rando => await Randomizer.GetRandomizedResponse(config),
       _ => null,
     };
   }

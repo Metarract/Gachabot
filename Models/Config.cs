@@ -1,4 +1,4 @@
-namespace Gachabot {
+namespace Randobot {
   namespace Models {
     public struct Config {
       public ClientSettings ClientSettings;
@@ -6,6 +6,12 @@ namespace Gachabot {
       public string Template;
       public string ListDirectory;
     }
+
+    // TODO adjust these
+    // ClientCOnfiguration
+    // CommandCOnfiguration
+    //    - CommandMaps in here
+    //    - Templates and ListDir as well
 
     public struct CommandMap {
       public string Input;

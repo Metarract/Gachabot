@@ -1,6 +1,6 @@
 using NLog;
 
-namespace Gachabot;
+namespace Randobot;
 public static class Log {
   private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 

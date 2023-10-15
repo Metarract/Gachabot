@@ -3,12 +3,18 @@
     "ClientId": "REPLACE ME",
     "ClientSecret": "REPLACE ME",
     "BotUsername": "REPLACE ME",
-    "RedirectUri": "http://localhost:5001/token",
-    "CommandCharacter": "!",
+    "BaseUri": "http://localhost:5001",
     "TwitchChannels": [
       "REPLACE ME"
-    ]
+    ],
+    "CommandCharacter": "!"
   },
+  "BotCommandMapping": [
+    {
+      "Input": "tome",
+      "Target": "rando"
+    }
+  ],
   "ListDirectory": "./Data",
   "Template": "{CLASSES} {RACES}"
 }
