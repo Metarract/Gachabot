@@ -4,7 +4,7 @@
     "ClientSecret": "REPLACE ME",
     "BotUsername": "REPLACE ME",
     "LocalAppPort": 3000,
-    "RedirectBaseUri": "http://localhost",
+    "RedirectBaseUrl": "http://localhost:3000",
     "TwitchChannels": [
       "REPLACE ME"
     ]
