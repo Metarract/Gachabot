@@ -1,5 +1,4 @@
 ﻿using Randobot.Models;
-using Newtonsoft.Json;
 
 namespace Randobot;
 internal class Program {
@@ -7,13 +6,13 @@ internal class Program {
     try {
       Log.Info("Beginning Setup Procedures");
       var builder = WebApplication.CreateBuilder(args);
-      var appConfig = GetConfig();
+      var appConfig = Config.GetConfig();
 
       builder.Services.AddSingleton(new Bot(appConfig));
       builder.Services.AddSingleton(new TwitchAuth(
         appConfig.ClientConfig.ClientId,
         appConfig.ClientConfig.ClientSecret,
-        appConfig.ClientConfig.RedirectBaseUri
+        appConfig.ClientConfig.RedirectBaseUrl
       ));
 
       var app = builder.Build();
@@ -21,32 +20,50 @@ internal class Program {
       var bot = app.Services.GetService<Bot>();
       var auth = app.Services.GetService<TwitchAuth>();
 
-      if (auth is null || bot is null) throw new Exception("Bot/Twitch Auth not injected properly");
+      if (auth is null || bot is null) throw new Exception("Bot/TwitchAuth objects not injected properly");
       auth.TwitchTokenSet += bot.SetClientCredentials;
       bot.CheckCredValidity += auth.AttemptTokenRefresh;
 
-      app.MapGet("/authorize", (TwitchAuth twitchAuth) => Results.Redirect(twitchAuth.GetAuthorizationUrl()));
-      app.MapGet("/token", async (string? code, string? scope, string? state, string? error, Bot bot, TwitchAuth twitchAuth) => {
-        if (error != null) return Results.Unauthorized();
-        if (state != twitchAuth.StateString) return Results.BadRequest();
-        if (code == null) return Results.StatusCode(500);
-        Log.Info("User authorized token for Bot Client");
-        await twitchAuth.GetToken(code);
-        Log.Info("User Auth Token Generated");
-        return Results.Content("Success: You may now close this window");
+      #region endpoints
+      app.MapGet("/authorize", (TwitchAuth twitchAuth) => {
+        Log.Info("Requesting User authorization...");
+        Results.Redirect(twitchAuth.GetAuthorizationUrl());
       });
 
-      app.Run($"http://localhost:{appConfig.ClientConfig.LocalAppPort}");
+      app.MapGet("/token", async (string? code, string? scope, string? state, string? error, Bot bot, TwitchAuth twitchAuth) => {
+        try {
+          if (state != twitchAuth.StateString) {
+            Log.Warn("State string did not match, possible request forgery");
+            return Results.BadRequest();
+          }
+          if (error != null) {
+            Log.Warn("Could not authorize");
+            Log.Warn(error);
+            return Results.Unauthorized();
+          }
+          if (code == null) {
+            Log.Warn("Did not recieve a code from response");
+            return Results.BadRequest();
+          }
+
+          Log.Info("User authorized token for Bot Client");
+          await twitchAuth.GetToken(code);
+          Log.Info("User Auth Token Generated");
+          return Results.Content("Success: You may now close this window");
+        } catch (Exception ex) {
+          Log.Error(ex.Message);
+          return Results.StatusCode(500);
+        }
+      });
+      #endregion
+
+      app.Urls.Add($"http://localhost:{appConfig.ClientConfig.LocalAppPort}");
+      app.Run();
     } catch (Exception ex) {
       Log.Fatal(ex.Message);
-      throw;
+      Log.Fatal("Press any key to exit...");
+      Console.ReadKey();
+      Environment.Exit(1);
     }
-  }
-
-  private static Config GetConfig () {
-    // ASP.NET config binding/mapping kinda sucks so i'm keeping this
-    // TODO pull environment from... environment
-    string configString = File.ReadAllText("./config.Development.json");
-    return JsonConvert.DeserializeObject<Config>(configString);
   }
 }

@@ -480,5 +480,5 @@ $RECYCLE.BIN/
 # Project Specific #
 ####################
 **/*.csv
-config.*.json
+config.json
 **/cachefile
