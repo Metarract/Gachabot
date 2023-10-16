@@ -8,7 +8,6 @@ namespace Randobot {
 
       public static Config GetConfig () {
         // ASP.NET config binding/mapping kinda sucks for nested objects imho so i'm keeping this
-        Console.WriteLine(AppContext.BaseDirectory);
         string configString = File.ReadAllText($"{AppContext.BaseDirectory}/config.json");
         var configObject = JsonConvert.DeserializeObject<Config>(configString) ?? throw new Exception("Could not get config data, ensure there is a config.json file in the same directory as the executable");
         return configObject;

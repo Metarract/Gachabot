@@ -17,27 +17,28 @@
     <PackageReference Include="TwitchLib" Version="3.5.3" />
   </ItemGroup>
 
-  <!-- Single File Exclusions -->
 
   <ItemGroup>
-    <Content Update="config.json">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
+    <!-- No Publish -->
+    <Content Remove="config.json" />
+
+    <!-- Publish but exclude from single-file -->
     <Content Update="example.config.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="NLog.config">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="LICENSE">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+
+    <!-- Unreferenced content to publish but exclude from single-file -->
+    <Content Include="LICENSE">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="README.md">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    <Content Include="README.md">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
