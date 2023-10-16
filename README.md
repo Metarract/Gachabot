@@ -65,12 +65,11 @@ All elements are required. If you do not wish to map any commands, you can simpl
 ```json
 "BotCommandMapping": [ ]
 ```
-
-At some point I'll probably make the bot request any missing configurations to streamline setup.
-
 </details>
 
-### Starting the bot
+At some point I'll probably make the bot request any missing configurations to streamline setup, cementing the glossary-like nature of this section.
+
+### 3. Starting the bot
 
 Once you have all your configuration bits set, simply run the bot. It should create a console window (unless you ran it from a console). In order to kickstart the bot's connection to twitch, you'll need to visit `<YourBaseUrlHere>/authorize` in your browser (e.g., `http://localhost:3000/authorize` if your `RedirectBaseUrl` is `http://localhost:3000`). This will take you to twitch where it will ask you if you would like to authorize the Application you made in the first step to operate as your account with the permissions specified on the page. Don't accept just yet because:
 
