@@ -18,9 +18,11 @@ public class TwitchAuth {
 
   private readonly static TwitchAPI api = new();
   public string RedirectBaseUri;
+  public string FullRedirectUri;
 
   public TwitchAuth (string clientId, string clientSecret, string redirectBaseUri) {
     RedirectBaseUri = redirectBaseUri;
+    FullRedirectUri = RedirectBaseUri + "/token";
     api.Settings.ClientId = clientId;
     api.Settings.Secret = clientSecret;
 
@@ -36,7 +38,7 @@ public class TwitchAuth {
   public string GetAuthorizationUrl () {
     ResetStateString();
     return api.Auth.GetAuthorizationCodeUrl(
-      RedirectBaseUri,
+      FullRedirectUri,
       api.Settings.Scopes,
       true,
       StateString,
@@ -81,7 +83,7 @@ public class TwitchAuth {
     await RefreshToken();
   }
 
-  public async Task GetToken (string authCode) => SetAuthFromResponse(await api.Auth.GetAccessTokenFromCodeAsync(authCode, api.Settings.Secret, $"{RedirectBaseUri}/token", api.Settings.ClientId));
+  public async Task GetToken (string authCode) => SetAuthFromResponse(await api.Auth.GetAccessTokenFromCodeAsync(authCode, api.Settings.Secret, FullRedirectUri, api.Settings.ClientId));
   private async Task RefreshToken () => SetAuthFromResponse(await api.Auth.RefreshAuthTokenAsync(Refresh, api.Settings.Secret, api.Settings.ClientId));
 
   private void SetAuthFromResponse (AuthCodeResponse res) => SetAuthVals(res.AccessToken, res.RefreshToken, res.ExpiresIn);
