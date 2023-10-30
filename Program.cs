@@ -27,7 +27,7 @@ internal class Program {
       #region endpoints
       app.MapGet("/authorize", (TwitchAuth twitchAuth) => {
         Log.Info("Requesting User authorization...");
-        Results.Redirect(twitchAuth.GetAuthorizationUrl());
+        return Results.Redirect(twitchAuth.GetAuthorizationUrl());
       });
 
       app.MapGet("/token", async (string? code, string? scope, string? state, string? error, Bot bot, TwitchAuth twitchAuth) => {
