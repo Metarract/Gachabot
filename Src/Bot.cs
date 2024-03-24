@@ -97,8 +97,14 @@ public sealed class Bot {
   }
 
   private async void OnClientCommandReceived (object? sender, OnChatCommandReceivedArgs e) {
-    var response = await MessageHandler.GetCommandResponse(e.Command, config.CommandConfig);
-    if (response != null) Client.SendMessage(e.Command.ChatMessage.Channel, response);
+    try {
+      var response = await MessageHandler.GetCommandResponse(e.Command, config.CommandConfig);
+      if (response != null) Client.SendMessage(e.Command.ChatMessage.Channel, response);
+    } catch (Exception err) {
+      Log.Error("Error received while processing commands");
+      Log.Error(err.Message);
+      if (err.StackTrace is not null) Log.Error($"Trace:\r\n{err.StackTrace}");
+    }
   }
   #endregion
 }

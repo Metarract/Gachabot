@@ -26,8 +26,7 @@ public static class MessageHandler {
 
   private static string GetCommandMapping (string command, List<CommandMap> mappings) {
     var match = mappings.Find(mapping => mapping.Input.ToLower().Trim() == command.ToLower().Trim());
-    if (match.Target.Trim().Length != 0) return match.Target.ToLower().Trim();
-    return command.ToLower().Trim();
+    return ((match.Target?.Trim() is not null) ? match.Target : command).ToLower().Trim();
   }
 
   public async static Task<string?> GetCommandResponse (ChatCommand command, CommandConfig commandConfig) {

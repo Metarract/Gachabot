@@ -1,3 +1,9 @@
+# v1.0.3
+- Fixed issue with unmapped commands not being properly handled by `GetCommandMapping`
+  - Was improperly assuming the default value of a string, doing a proper null check now
+- Added some error handling around the command handler so that commands don't necessarily crash the bot
+  - Mistakenly thought that errors would bubble up to `Program` but will probably have to do some better handling of errors within each event if it makes sense
+
 # v1.0.2
 - Added example Data Directory to publish
 - Fixed even more issues with redirect, this time with string concatenation
