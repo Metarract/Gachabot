@@ -1,3 +1,7 @@
+# v1.0.3
+- Fixed issue with unmapped commands not being properly handled by `GetCommandMapping`
+  - Was improperly assuming the default value of a string, doing a proper null check now
+
 # v1.0.2
 - Added example Data Directory to publish
 - Fixed even more issues with redirect, this time with string concatenation
